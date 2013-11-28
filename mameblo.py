@@ -49,7 +49,7 @@ class Mameblo(object):
         self.opener = Opener()
         self.re_authenticity_token = re.compile('name="authenticity_token".+?value="(.+?)"')
 
-        if not self.opener.hasCookie():
+        if not self.isLogin():
             self.login(name, password)
 
     def getToken(self, url):
@@ -58,6 +58,17 @@ class Mameblo(object):
         m = self.re_authenticity_token.search(content)
         if m:
             return m.group(1)
+
+    def isLogin(self):
+        url = 'http://www.mameblo.com'
+        response = self.opener.get(url)
+        if response.code == 200:
+            body = unicode(response.read(), 'utf-8', 'ignore')
+            if '/signin' in body:
+                return False
+            else:
+                return True
+        return False
 
     def login(self, name, password):
         url = 'http://www.mameblo.com/signin'
