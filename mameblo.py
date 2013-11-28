@@ -78,7 +78,14 @@ class Mameblo(object):
             'session[name]': name,
             'session[password]': password
         }
-        return self.opener.post('http://www.mameblo.com/sessions', query)
+        response = self.opener.post('http://www.mameblo.com/sessions', query)
+        body = unicode(response.read(), 'utf-8', 'ignore')
+        if 'error' in body:
+            print 'Login failed'
+            quit()
+        else:
+            print 'Login success'
+        return response
 
     def post(self, title, content):
         url = 'http://www.mameblo.com'
